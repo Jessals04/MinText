@@ -1,9 +1,104 @@
-import React from 'react';
+import { useState } from "react";
+import { GraphQLClient, gql } from "graphql-request";
 
-function SignUp() {
+function SignUp({ user, setUser }) {
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [usernameAvailable, setUsernameAvailable] = useState(true);
+    const [emailAvailable, setEmailAvailable] = useState(true);
+
+    // create a GraphQLClient instance
+    const hygraph = new GraphQLClient(
+        'https://api-ap-southeast-2.hygraph.com/v2/clf530pz54wiv01ug5kdudakw/master', {
+            headers: {
+                authorization: `Bearer ${process.env.REACT_APP_AUTHTOKEN}`,
+            }
+        }
+    );
+
+    // create a query to check if username exists
+    const CHECKFORUSERNAMEQUERY = gql`
+      query CheckForUsername($username: String!) {
+        profile(where: {
+          username: $username
+        }) {
+          username
+        }
+      }
+    `;
+
+    // create a query to check if username exists
+    const CHECKFOREMAILQUERY = gql`
+      query CheckForEmail($email: String!) {
+        profile(where: {
+          email: $email
+        }) {
+          email
+        }
+      }
+    `;
+
+    // function that checks database if username exists
+    // returns a boolean
+    async function checkForUsername(usernameToCheck) {
+        let response = {};
+        await hygraph.request(CHECKFORUSERNAMEQUERY, { username: usernameToCheck })
+        .then((res) => res)
+        .then((data) => {
+            response = data.profile.username;
+        })
+        .catch((err) => console.log(err.message));
+
+        if (response == {}) return true
+        else return false
+    }
+    
+    // function that checks database if email exists
+    // returns a boolean
+    async function checkForEmail(emailToCheck) {
+        let response = {};
+        await hygraph.request(CHECKFOREMAILQUERY, { email: emailToCheck })
+        .then((res) => res)
+        .then((data) => {
+            response = data.profile;
+        })
+        .catch((err) => console.log(err.message));
+
+        console.log(response)
+        if (response == null) return true
+        else return false
+    }
+
+    // onChange functions
+    function onUsernameChange({ target }) {
+        setUsername(target.value);
+        setUsernameAvailable(checkForUsername(target.value));
+    }
+
+    function onEmailChange({ target }) {
+        setEmail(target.value);
+        setEmailAvailable(checkForEmail(target.value));
+    }
+
+    function onPasswordChange({ target }) {
+        setPassword(target.value);
+    }
+
     return (
-        <div>
-
+        <div className='flex m-10'>
+            <div className='flex flex-col gap-4 m-auto bg-slate-800 px-36 py-10 rounded-lg text-slate-50'>
+                <h1 className='mx-auto text-2xl'>Sign Up</h1>
+                {
+                    usernameAvailable ? <></> : <h2 className="text-orange-600 text-sm">That username is already taken.</h2>
+                }
+                <input value={username} onChange={onUsernameChange} className='bg-slate-600 rounded-lg p-2 w-80' type="text" placeholder='Username' />
+                {
+                    emailAvailable ? <></> : <h2 className="text-orange-600 text-sm">That email is already taken. Try loggin in.</h2>
+                }
+                <input value={email} onChange={onEmailChange} className='bg-slate-600 rounded-lg p-2 w-80' type="email" placeholder='Email' />
+                <input value={password} onChange={onPasswordChange} className='bg-slate-600 rounded-lg p-2 w-80' type="password" placeholder='Password' />
+            </div>
         </div>
     );
 }
