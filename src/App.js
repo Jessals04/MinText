@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, Route, Routes } from "react-router-dom";
 
 // import pages
@@ -8,7 +8,15 @@ import SignUp from "./pages/SignUp";
 import MyMessages from "./pages/MyMessages";
 
 function App() {
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
+
+  function handleSetUser(newUser) {
+    setUser(newUser);
+  }
+
+  function logOut() {
+    setUser(null);
+  }
 
   return (
       <div className="flex flex-col h-screen max-h-screen">
@@ -19,14 +27,14 @@ function App() {
           <ul className="flex gap-12">
             <li className="flex">
               {
-                user != {}
+                user !== {}
                 ? <Link className="border-2 py-1 px-4 rounded-lg"  to={'/my-messages'}>My Messages</Link>
                 : <h2 className="py-1 px-4" >Please log in: </h2>
               }
             </li>
             <li>
               {
-                user != {}
+                user !== {}
                 ? <button className="border-2 py-1 px-4 rounded-lg">Logout</button>
                 : <div className="flex gap-4">
                     <Link className="border-2 py-1 px-4 rounded-lg" to={'/login'}>Login</Link>
@@ -40,8 +48,8 @@ function App() {
         <Routes>
           <Route exact path="/" Component={Home} />
           <Route exact path="/my-messages" element={ <MyMessages username={'jessals'} /> } />
-          <Route exact path="/login" element={ <Login user={user} setUser={setUser} /> } />
-          <Route exact path="/signup" element={ <SignUp user={user} setUser={setUser} /> } />
+          <Route exact path="/login" element={ <Login user={user} setUser={handleSetUser} /> } />
+          <Route exact path="/signup" element={ <SignUp user={user} handleSetUser={handleSetUser} /> } />
         </Routes>
       </div>
   );
