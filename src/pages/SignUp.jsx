@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { GraphQLClient, gql } from "graphql-request";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function SignUp({ user, handleSetUser }) {
     const [username, setUsername] = useState('');
@@ -10,6 +10,7 @@ function SignUp({ user, handleSetUser }) {
     const [emailAvailable, setEmailAvailable] = useState(true);
     const [passwordIsLegal, setPasswordIsLegal] = useState(true);
     const [showErrorMessage, setShowErrorMessage] = useState(false);
+    const navigate = useNavigate();
 
     // create a GraphQLClient instance
     const hygraph = new GraphQLClient(
@@ -200,14 +201,14 @@ function SignUp({ user, handleSetUser }) {
         setPassword('');
 
         // send user to MyMessages
-        Navigate('/my-messages');
+        navigate('/my-messages');
 
     }
 
     return (
         <div className='flex m-10'>
             <div className='flex flex-col gap-4 m-auto bg-slate-800 px-36 py-10 rounded-lg text-slate-50'>
-                <h1 className='mx-auto text-2xl'>Sign Up</h1>
+                <h1 className='mx-auto text-2xl'>Sign Up: {user.username}</h1>
                 {
                     showErrorMessage ? <h2 className="text-red-600 text-sm">There was an error, please try again.</h2> : <></>
                 }

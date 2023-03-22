@@ -8,14 +8,14 @@ import SignUp from "./pages/SignUp";
 import MyMessages from "./pages/MyMessages";
 
 function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
 
   function handleSetUser(newUser) {
     setUser(newUser);
   }
 
   function logOut() {
-    setUser(null);
+    setUser({});
   }
 
   return (
@@ -35,7 +35,7 @@ function App() {
             <li>
               {
                 user !== {}
-                ? <button className="border-2 py-1 px-4 rounded-lg">Logout</button>
+                ? <button className="border-2 py-1 px-4 rounded-lg" onClick={logOut}>Logout</button>
                 : <div className="flex gap-4">
                     <Link className="border-2 py-1 px-4 rounded-lg" to={'/login'}>Login</Link>
                     <Link className="border-2 py-1 px-4 rounded-lg" to={'/signup'}>Sign Up</Link>
