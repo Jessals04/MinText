@@ -6,7 +6,7 @@ function MyMessages({ username }) {
     return (
         <div>
           <MessagesContainer username={username} />
-          <SendMessageContainer />
+          <SendMessageContainer username={username} />
         </div>
       );
 }

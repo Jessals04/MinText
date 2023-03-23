@@ -3,7 +3,7 @@ import SendMessage from "../components/SendMessage";
 import { useState } from "react";
 import { GraphQLClient, gql } from "graphql-request";
 
-function SendMessageContainer() {
+function SendMessageContainer({ username }) {
     const [text, setText] = useState('');
 
     // create a GraphQLClient instance
@@ -52,7 +52,7 @@ function SendMessageContainer() {
     // create query variables
     const variables = {
         content: text,
-        username: 'jessals'
+        username: username
     };
 
     function handleChange(value) {

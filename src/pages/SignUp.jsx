@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { GraphQLClient, gql } from "graphql-request";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function SignUp({ user, handleSetUser }) {
     const [username, setUsername] = useState('');
@@ -205,15 +205,23 @@ function SignUp({ user, handleSetUser }) {
 
     }
 
+    // if user is already logged in, navigate back to home
+    useEffect(() => {
+        if (user.username) navigate('/');
+    }, []);
+
     return (
         <div className='flex m-10'>
             <div className='flex flex-col gap-4 m-auto bg-slate-800 px-36 py-10 rounded-lg text-slate-50'>
-                <h1 className='mx-auto text-2xl'>Sign Up: {user.username}</h1>
+                <h1 className='mx-auto text-2xl'>Sign Up</h1>
                 {
                     showErrorMessage ? <h2 className="text-red-600 text-sm">There was an error, please try again.</h2> : <></>
                 }
                 {
-                    usernameAvailable ? <></> : <h2 className="text-orange-600 text-sm">That username is already taken.</h2>
+                    usernameAvailable ? <></> : <h2 className="text-orange-600 text-sm">That username is already taken.
+                                                                                          <br />
+                                                                                          Already have an account? <Link to={'/login'} className="underline">Login</Link>.
+                                                                                          </h2>
                 }
                 <input value={username} onChange={onUsernameChange} className='bg-slate-600 rounded-lg p-2 w-80' type="text" placeholder='Username' />
                 {
