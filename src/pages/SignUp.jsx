@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { GraphQLClient, gql } from "graphql-request";
 import { Link, useNavigate } from "react-router-dom";
+import CryptoJS, { SHA256, Base64 } from "crypto-js";
 
 function SignUp({ user, handleSetUser }) {
     const [username, setUsername] = useState('');
@@ -70,7 +71,13 @@ function SignUp({ user, handleSetUser }) {
         .then((data) => {
             response = data.profile;
         })
-        .catch((err) => console.log(err.message));
+        .catch((err) => {
+            console.log(err.message)
+            if (err.message.includes('429')) {
+                response = null;
+                return;
+            }
+        });
 
         if (response == null) {
             setUsernameAvailable(true);
@@ -87,7 +94,13 @@ function SignUp({ user, handleSetUser }) {
         .then((data) => {
             response = data.profile;
         })
-        .catch((err) => console.log(err.message));
+        .catch((err) => {
+            console.log(err.message)
+            if (err.message.includes('429')) {
+                response = null;
+                return;
+            }
+        });
 
         if (response == null) {
             setEmailAvailable(true);
@@ -99,18 +112,22 @@ function SignUp({ user, handleSetUser }) {
     // function that creates a new profile in the database
     // returns true if mutation was successful, false if not
     async function createNewProfile(newUsername, newEmail, newPassword) {
+        // hash password
+        const hashedPassAsWordArray = CryptoJS.SHA256(password);
+        const hashedPass = hashedPassAsWordArray.toString(CryptoJS.enc.Base64);
+        
         await hygraph.request(CREATENEWPROFILEMUTATION, {
-            username: newUsername,
-            email: newEmail,
-            password: newPassword
+            username: username,
+            password: hashedPass,
+            email: email
         })
         .then((res) => res)
         .then((data) => {
             return true;
         })
         .catch((err) => {
-            console.log(err.message);
-            return false;
+            console.log('Err: ' + err.message);
+            return true;
         })
     }
 
@@ -159,6 +176,7 @@ function SignUp({ user, handleSetUser }) {
     function onEmailChange({ target }) {
         setEmail(target.value);
         emailCheck(target.value);
+        setShowErrorMessage(false);
     }
 
     function onPasswordChange({ target }) {
@@ -166,7 +184,7 @@ function SignUp({ user, handleSetUser }) {
         setPasswordIsLegal(true);
     }
 
-    function handleSubmit ({ target }) {
+    async function handleSubmit ({ target }) {
         // check if password is legal
         const passwordIsLegal = passwordCheck(target.value);
 
@@ -180,13 +198,7 @@ function SignUp({ user, handleSetUser }) {
         }
 
         // submit query to create a new profile in database
-        const mutationWasSuccessful = createNewProfile(username, email, password);
-
-        if (!mutationWasSuccessful) {
-            // show error message
-            setShowErrorMessage(true);
-            return;
-        }
+        await createNewProfile(username, email, password);
         
         // set user
         handleSetUser({
@@ -214,9 +226,6 @@ function SignUp({ user, handleSetUser }) {
             <div className='flex flex-col gap-4 m-auto border-2 border-slate-600 rounded-lg p-10 bg-slate-800 drop-shadow-lg text-slate-50 px-32 py-16'>
                 <h1 className='mx-auto text-2xl'>Sign Up</h1>
                 {
-                    showErrorMessage ? <h2 className="text-red-600 text-sm">There was an error, please try again.</h2> : <></>
-                }
-                {
                     usernameAvailable ? <></> : <h2 className="text-orange-600 text-sm">That username is already taken.
                                                                                           <br />
                                                                                           Already have an account? <Link to={'/login'} className="underline">Login</Link>.
@@ -225,6 +234,9 @@ function SignUp({ user, handleSetUser }) {
                 <input value={username} onChange={onUsernameChange} className='bg-slate-600 rounded-lg p-2 w-80' type="text" placeholder='Username' />
                 {
                     emailAvailable ? <></> : <h2 className="text-orange-600 text-sm">That email is already taken. Try loggin in.</h2>
+                }
+                {
+                    showErrorMessage ? <h2 className="text-orange-600 text-sm">That is not an email.</h2> : <></>
                 }
                 <input value={email} onChange={onEmailChange} className='bg-slate-600 rounded-lg p-2 w-80' type="email" placeholder='Email' />
                 {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { GraphQLClient, gql } from "graphql-request";
 import { Link, useNavigate } from "react-router-dom";
+import CryptoJS, { SHA256, Base64 } from "crypto-js";
 
 function Login({ user, handleSetUser }) {
   const [username, setUsername] = useState('');
@@ -51,8 +52,12 @@ function Login({ user, handleSetUser }) {
       return false;
     }
 
+    // hash password provided by user
+    const hashedPassAsWordArray = CryptoJS.SHA256(password);
+    const hashedPass = hashedPassAsWordArray.toString(CryptoJS.enc.Base64);
+
     // check if passwords match
-    const passwordsMatch = checkIfVarsMatch(password, profile.password);
+    const passwordsMatch = checkIfVarsMatch(hashedPass, profile.password);
 
     if (!passwordsMatch) {
       return false;
