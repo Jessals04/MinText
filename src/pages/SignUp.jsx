@@ -155,6 +155,9 @@ function SignUp({ user, handleSetUser }) {
             if (err.message.includes('String provided for email does not match the pattern of an email')) {
                 setShowErrorMessage(true);
                 return false;
+            } else if (err.message.includes('Input value does not match the expected format')) {
+                setShowErrorMessage(true);
+                return false;
             }
             return false;
         });
