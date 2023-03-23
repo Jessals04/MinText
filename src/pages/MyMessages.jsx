@@ -3,12 +3,15 @@ import MessagesContainer from "../containers/MessagesContainer";
 import SendMessageContainer from "../containers/SendMessageContainer";
 import { useNavigate } from 'react-router-dom';
 
-function MyMessages({ username }) {
+function MyMessages({ logOut, username }) {
   const navigate = useNavigate();
 
   // if user is not logged in, navigate to login
   useEffect(() => {
-    if (!username) navigate('/login');
+    if (!username) {
+      console.log('no user');
+      logOut();
+    }
   });
 
   return (

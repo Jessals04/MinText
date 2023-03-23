@@ -20,6 +20,13 @@ function App() {
     navigate('/login');
   }
 
+  function logIn(username, email) {
+    setUser({
+      username: username,
+      email: email
+    });
+  }
+
   return (
       <div className="flex flex-col h-screen max-h-screen bg-slate-900 text-slate-50 overflow-hidden">
         <div className="flex flex-col mx-auto bg-slate-800 w-full p-4 drop-shadow-2xl border-b-2 border-slate-600">
@@ -59,9 +66,9 @@ function App() {
         </div>
         <Routes>
           <Route exact path="/" Component={Home} />
-          <Route exact path="/my-messages" element={ <MyMessages username={user.username} /> } />
-          <Route exact path="/login" element={ <Login user={user} handleSetUser={handleSetUser} /> } />
-          <Route exact path="/signup" element={ <SignUp user={user} handleSetUser={handleSetUser} /> } />
+          <Route exact path="/my-messages" element={ <MyMessages logOut={logOut} username={user.username} /> } />
+          <Route exact path="/login" element={ <Login logIn={logIn} user={user} handleSetUser={handleSetUser} /> } />
+          <Route exact path="/signup" element={ <SignUp logIn={logIn} user={user} handleSetUser={handleSetUser} /> } />
         </Routes>
       </div>
   );

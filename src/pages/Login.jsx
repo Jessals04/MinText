@@ -76,7 +76,7 @@ function Login({ user, handleSetUser }) {
   }
 
   function onUsernameChange({ target }) {
-    setUsername(target.value);
+    setUsername(target.value.toLowerCase());
     setUsernameExists(true);
   }
   
@@ -111,7 +111,7 @@ function Login({ user, handleSetUser }) {
   // if user is already logged in, navigate back to home
   useEffect(() => {
     if (user.username) navigate('/');
-  }, []);
+  });
   
   return (
     <div>

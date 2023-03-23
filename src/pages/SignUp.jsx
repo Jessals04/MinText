@@ -3,7 +3,7 @@ import { GraphQLClient, gql } from "graphql-request";
 import { Link, useNavigate } from "react-router-dom";
 import CryptoJS, { SHA256, Base64 } from "crypto-js";
 
-function SignUp({ user, handleSetUser }) {
+function SignUp({ logOut, logIn, user, handleSetUser }) {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -140,6 +140,7 @@ function SignUp({ user, handleSetUser }) {
         // hash password
         const hashedPassAsWordArray = CryptoJS.SHA256(newPassword);
         const hashedPass = hashedPassAsWordArray.toString(CryptoJS.enc.Base64);
+        let returnTrue = true;
         
         await hygraph.request(CREATENEWPROFILEMUTATION, {
             username: newUsername,
@@ -148,20 +149,17 @@ function SignUp({ user, handleSetUser }) {
         })
         .then((res) => res)
         .then((data) => {
-            console.log('createNewProfile success');
+            console.log('Account creation successful.');
         })
         .catch((err) => {
-            console.log(err.message);
-            if (err.message.includes('String provided for email does not match the pattern of an email')) {
-                setShowErrorMessage(true);
-                return false;
-            } else if (err.message.includes('Input value does not match the expected format')) {
-                setShowErrorMessage(true);
-                return false;
-            }
-            return false;
+            console.error('Account was not created successfully. The following error message was received:\n----------\n'
+                          + err.message
+                          + '----------');
+            setShowErrorMessage(true);
+            returnTrue = false;
         });
-        return true;
+
+        return returnTrue;
     }
 
     // function that checks the length of the password
@@ -201,21 +199,29 @@ function SignUp({ user, handleSetUser }) {
     }
 
     // function to send welcome message on sign up
+    // will return true if successful, else false
     async function sendWelcomeMessage(usernameToSendFrom, content) {
+        let returnTrue = true;
+
         await hygraph.request(SENDWELCOMEMESSAGEMUTATION, {
             username: usernameToSendFrom,
             content: content
         })
+        .then((res) => res)
+        .then((data) => data)
         .catch((err) => {
-            console.log(err.message);
-            navigate('/signup');
+            console.error('There was an error sending the welcome message. The following error message was received:\n----------\n'
+                          + err.message
+                          + '----------');
+            returnTrue = false;
         });
-        console.log('sendWelcomeMessage success');
+        
+        return returnTrue;
     }
 
     // onChange functions
     function onUsernameChange({ target }) {
-        setUsername(target.value);
+        setUsername(target.value.toLowerCase());
         checkUsername(target.value);
     }
 
@@ -239,26 +245,28 @@ function SignUp({ user, handleSetUser }) {
 
         // if any field is illegal, return
         if (!(passwordIsLegal && fieldsAreLegal)) {
-            console.log('Some fields are not legal.');
+            console.error('Some fields are not legal. Cancelling account creation.');
             return;
         }
 
         // submit query to create a new profile in database
         const accCreationSuccessful = await createNewProfile(username, email, password);
-        if (!accCreationSuccessful) {
-            console.log('!accCreationSuccessful');
+        console.log(accCreationSuccessful);
+        if (accCreationSuccessful === false) {
+            console.error('There was an error creating the account.');
             return;
         }
         
-        // set user
-        handleSetUser({
-            username: username,
-            email: email
-        });
+        // logIn
+        logIn(username, email);
 
         // send welcome message
         const content = `👋 Everyone welcome ${username} to MinText!`;
-        sendWelcomeMessage(username, content);
+        const welcomeMessageSuccess = await sendWelcomeMessage(username, content);
+        if (welcomeMessageSuccess === false) {
+            logOut();
+            return;
+        }
 
         // clear fields
         setUsername('');
@@ -273,12 +281,15 @@ function SignUp({ user, handleSetUser }) {
     // if user is already logged in, navigate back to home
     useEffect(() => {
         if (user.username) navigate('/');
-    }, []);
+    });
 
     return (
         <div className='flex m-10'>
             <div className='flex flex-col gap-4 m-auto border-2 border-slate-600 rounded-lg p-10 bg-slate-800 drop-shadow-lg text-slate-50 px-32 py-16'>
                 <h1 className='mx-auto text-2xl'>Sign Up</h1>
+                {
+                    showErrorMessage ? <h2 className="text-orange-600 text-sm">There was an error, please try again.</h2> : <></>
+                }
                 {
                     usernameAvailable ? <></> : <h2 className="text-orange-600 text-sm">That username is already taken.
                                                                                           <br />
@@ -288,9 +299,6 @@ function SignUp({ user, handleSetUser }) {
                 <input value={username} onChange={onUsernameChange} className='bg-slate-600 rounded-lg p-2 w-80' type="text" placeholder='Username' />
                 {
                     emailAvailable ? <></> : <h2 className="text-orange-600 text-sm">That email is already taken. Try loggin in.</h2>
-                }
-                {
-                    showErrorMessage ? <h2 className="text-orange-600 text-sm">That is not an email.</h2> : <></>
                 }
                 <input value={email} onChange={onEmailChange} className='bg-slate-600 rounded-lg p-2 w-80' type="email" placeholder='Email' />
                 {
