@@ -63,6 +63,31 @@ function SignUp({ user, handleSetUser }) {
       }
     `;
 
+    // create a mutation to create a welcome message
+    const SENDWELCOMEMESSAGEMUTATION = gql`
+      mutation AddMessage($content: String!, $username: String!) {
+        createMessage (
+            data: {
+                content: $content,
+                profile: {
+                    connect: {
+                    username: $username
+                }
+            }
+        }) {
+            id
+        }
+
+        publishManyMessagesConnection (last: 1, from: DRAFT, to: PUBLISHED) {
+            edges {
+              node {
+                id
+              }
+            }
+        }
+      }
+    `;
+
     // function that checks database if username exists
     async function checkUsername(usernameToCheck) {
         let response = {};
@@ -113,28 +138,33 @@ function SignUp({ user, handleSetUser }) {
     // returns true if mutation was successful, false if not
     async function createNewProfile(newUsername, newEmail, newPassword) {
         // hash password
-        const hashedPassAsWordArray = CryptoJS.SHA256(password);
+        const hashedPassAsWordArray = CryptoJS.SHA256(newPassword);
         const hashedPass = hashedPassAsWordArray.toString(CryptoJS.enc.Base64);
         
         await hygraph.request(CREATENEWPROFILEMUTATION, {
-            username: username,
+            username: newUsername,
             password: hashedPass,
-            email: email
+            email: newEmail
         })
         .then((res) => res)
         .then((data) => {
-            return true;
+            console.log('createNewProfile success');
         })
         .catch((err) => {
-            console.log('Err: ' + err.message);
-            return true;
-        })
+            console.log(err.message);
+            if (err.message.includes('String provided for email does not match the pattern of an email')) {
+                setShowErrorMessage(true);
+                return false;
+            }
+            return false;
+        });
+        return true;
     }
 
     // function that checks the length of the password
     // returns a boolean
     function passwordCheck(passwordToCheck) {
-        if ((password.length > 6) && (password.length < 25)) {
+        if ((passwordToCheck.length > 6) && (passwordToCheck.length < 25)) {
             setPasswordIsLegal(true);
             return true;
         } else {
@@ -167,6 +197,19 @@ function SignUp({ user, handleSetUser }) {
         return fieldsLegal;
     }
 
+    // function to send welcome message on sign up
+    async function sendWelcomeMessage(usernameToSendFrom, content) {
+        await hygraph.request(SENDWELCOMEMESSAGEMUTATION, {
+            username: usernameToSendFrom,
+            content: content
+        })
+        .catch((err) => {
+            console.log(err.message);
+            navigate('/signup');
+        });
+        console.log('sendWelcomeMessage success');
+    }
+
     // onChange functions
     function onUsernameChange({ target }) {
         setUsername(target.value);
@@ -186,7 +229,7 @@ function SignUp({ user, handleSetUser }) {
 
     async function handleSubmit ({ target }) {
         // check if password is legal
-        const passwordIsLegal = passwordCheck(target.value);
+        const passwordIsLegal = passwordCheck(password);
 
         // check if username and email are legal
         const fieldsAreLegal = usernameAndEmailLengthCheck();
@@ -198,13 +241,21 @@ function SignUp({ user, handleSetUser }) {
         }
 
         // submit query to create a new profile in database
-        await createNewProfile(username, email, password);
+        const accCreationSuccessful = await createNewProfile(username, email, password);
+        if (!accCreationSuccessful) {
+            console.log('!accCreationSuccessful');
+            return;
+        }
         
         // set user
         handleSetUser({
             username: username,
             email: email
         });
+
+        // send welcome message
+        const content = `👋 Everyone welcome ${username} to MinText!`;
+        sendWelcomeMessage(username, content);
 
         // clear fields
         setUsername('');

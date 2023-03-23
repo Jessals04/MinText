@@ -9,7 +9,7 @@ function MyMessages({ username }) {
   // if user is not logged in, navigate to login
   useEffect(() => {
     if (!username) navigate('/login');
-  }, []);
+  });
 
   return (
     <div className='flex flex-col mt-auto'>
