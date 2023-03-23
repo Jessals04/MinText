@@ -288,7 +288,10 @@ function SignUp({ logOut, logIn, user, handleSetUser }) {
             <div className='flex flex-col gap-4 m-auto border-2 border-slate-600 rounded-lg p-10 bg-slate-800 drop-shadow-lg text-slate-50 px-32 py-16'>
                 <h1 className='mx-auto text-2xl'>Sign Up</h1>
                 {
-                    showErrorMessage ? <h2 className="text-orange-600 text-sm">There was an error, please try again.</h2> : <></>
+                    showErrorMessage ? <h2 className="text-orange-600 text-sm">There was an error, please try again.
+                                                                                <br />
+                                                                                Only certain characters can be used for a username.
+                                                                                </h2> : <></>
                 }
                 {
                     usernameAvailable ? <></> : <h2 className="text-orange-600 text-sm">That username is already taken.
