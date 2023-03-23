@@ -6,9 +6,9 @@ function SendMessage(props) {
     };
 
     return (
-        <div className="w-full flex">
+        <div className="w-full flex pb-4">
             <input
-                className="border-b-2 border-green-600 p-2 w-full mx-2"
+                className="bg-transparent border-b-2 border-green-600 p-2 w-full mx-2"
                 value={props.value}
                 type="text"
                 onChange={handleChange}

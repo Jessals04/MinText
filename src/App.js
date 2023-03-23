@@ -21,41 +21,42 @@ function App() {
   }
 
   return (
-      <div className="flex flex-col h-screen max-h-screen">
-        <h1 className="mx-auto text-2xl pb-2">
-          <Link to={'/'}>
-          {
-            user.username
-            ?
-            <p className="tracking-wide">Welcome to MinText, {user.username}!</p>
-            :
-            <p>MinText</p>
-          }
-          </Link>
-        </h1>
-        <nav className="mx-auto">
-          <ul className="flex gap-12">
-            <li className="flex">
-              {
-                user.username
-                ? <Link className="border-2 py-1 px-4 rounded-lg" to={'/my-messages'}>My Messages</Link>
-                : <h2 className="py-1 px-4" >Please log in: </h2>
-              }
-            </li>
-            <li>
-              {
-                user.username
-                ? <button className="border-2 py-1 px-4 rounded-lg" onClick={logOut}>Logout</button>
-                : <div className="flex gap-4 py-1">
-                    <Link className="text-green-600 hover:underline" to={'/login'}>Login</Link>
-                    or
-                    <Link className="text-green-600 hover:underline" to={'/signup'}>Sign Up</Link>
-                  </div>
-              }
-            </li>
-          </ul>
-        </nav>
-        <div className="signInDiv"></div>
+      <div className="flex flex-col h-screen bg-slate-900 text-slate-50">
+        <div className="flex flex-col mx-auto bg-slate-800 w-full p-4 drop-shadow-2xl border-b-2 border-slate-600">
+          <h1 className="text-center text-2xl">
+            <Link to={'/'}>
+            {
+              user.username
+              ?
+              <p className="tracking-wide">Welcome to MinText, <span className="text-green-600">{user.username}</span>!</p>
+              :
+              <p>MinText</p>
+            }
+            </Link>
+          </h1>
+          <nav className="mx-auto">
+            <ul className="flex gap-12">
+              <li className="flex">
+                {
+                  user.username
+                  ? <Link className="text-green-600 hover:underline py-1" to={'/my-messages'}>My Messages</Link>
+                  : <h2 className="py-1 px-4" >Please log in: </h2>
+                }
+              </li>
+              <li>
+                {
+                  user.username
+                  ? <button className="text-green-600 hover:underline py-1" onClick={logOut}>Logout</button>
+                  : <div className="flex gap-4 py-1">
+                      <Link className="text-green-600 hover:underline" to={'/login'}>Login</Link>
+                      or
+                      <Link className="text-green-600 hover:underline" to={'/signup'}>Sign Up</Link>
+                    </div>
+                }
+              </li>
+            </ul>
+          </nav>
+        </div>
         <Routes>
           <Route exact path="/" Component={Home} />
           <Route exact path="/my-messages" element={ <MyMessages username={user.username} /> } />

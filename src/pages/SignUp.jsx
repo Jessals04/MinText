@@ -106,7 +106,6 @@ function SignUp({ user, handleSetUser }) {
         })
         .then((res) => res)
         .then((data) => {
-            console.log(data);
             return true;
         })
         .catch((err) => {
@@ -212,7 +211,7 @@ function SignUp({ user, handleSetUser }) {
 
     return (
         <div className='flex m-10'>
-            <div className='flex flex-col gap-4 m-auto bg-slate-800 px-36 py-10 rounded-lg text-slate-50'>
+            <div className='flex flex-col gap-4 m-auto border-2 border-slate-600 rounded-lg p-10 bg-slate-800 drop-shadow-lg text-slate-50 px-32 py-16'>
                 <h1 className='mx-auto text-2xl'>Sign Up</h1>
                 {
                     showErrorMessage ? <h2 className="text-red-600 text-sm">There was an error, please try again.</h2> : <></>

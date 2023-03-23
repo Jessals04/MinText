@@ -41,7 +41,6 @@ function Login({ user, handleSetUser }) {
     await hygraph.request(GETPROFILEPASSQUERY, { username: username })
     .then((res) => res)
     .then((data) => {
-      console.log(data.profile);
       profile = data.profile;
     })
     .catch((err) => console.log(err.message));
@@ -89,8 +88,6 @@ function Login({ user, handleSetUser }) {
       return;
     }
 
-    console.log(usernameExists);
-
     // set user
     handleSetUser({
       username: username,
@@ -114,7 +111,7 @@ function Login({ user, handleSetUser }) {
   return (
     <div>
       <div className='flex m-10'>
-            <div className='flex flex-col gap-4 m-auto bg-slate-800 px-36 py-10 rounded-lg text-slate-50'>
+            <div className='flex flex-col gap-4 m-auto border-2 border-slate-600 rounded-lg p-10 bg-slate-800 drop-shadow-lg text-slate-50 px-32 py-16'>
                 <h1 className='mx-auto text-2xl'>Login</h1>
                 {
                   usernameExists

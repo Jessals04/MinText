@@ -4,7 +4,7 @@ import SendMessageContainer from "../containers/SendMessageContainer";
 
 function MyMessages({ username }) {
     return (
-        <div>
+        <div className='flex flex-col mt-auto'>
           <MessagesContainer username={username} />
           <SendMessageContainer username={username} />
         </div>

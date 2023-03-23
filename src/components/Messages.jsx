@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 function Messages({ messages, username }) {
     return (
-        <div className= 'p-2 flex'>
+        <div className='p-2 flex overflow-y-scroll scrollbar-hide'>
             <div className='mx-auto'>
                 {
                     messages.map((message) => (
