@@ -2,9 +2,11 @@ import React from 'react';
 import SendMessage from "../components/SendMessage";
 import { useState } from "react";
 import { GraphQLClient, gql } from "graphql-request";
+import { useNavigate } from 'react-router-dom';
 
 function SendMessageContainer({ username }) {
     const [text, setText] = useState('');
+    const navigate = useNavigate();
 
     // create a GraphQLClient instance
     const hygraph = new GraphQLClient(
@@ -66,6 +68,7 @@ function SendMessageContainer({ username }) {
         // create message
         const data = await hygraph.request(SENDMESSAGEQUERY, variables).catch((err) => {
             console.log(err.message);
+            navigate('/login');
         });
 
         // clear text
