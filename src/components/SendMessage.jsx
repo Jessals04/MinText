@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 function SendMessage(props) {
     function handleChange ({ target }) {
@@ -6,7 +6,7 @@ function SendMessage(props) {
     };
 
     return (
-        <div className="w-full flex pb-4">
+        <div className="w-full flex pb-4 drop-shadow-2xl border-t-2 border-slate-600 bg-gradient-to-t from-slate-900 to-slate-800">
             <input
                 className="bg-transparent border-b-2 border-green-600 p-2 w-full mx-2"
                 value={props.value}

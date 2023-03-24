@@ -1,16 +1,22 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 function Messages({ messages, username }) {
+    const scrollToRef = useRef();
+
+    useEffect(() => {
+        scrollToRef.current.scrollIntoView();
+    });
+    
     return (
-        <div className='p-2 flex overflow-y-auto'>
+        <div className='p-2 flex'>
             <div className='mx-auto'>
                 {
                     messages.map((message) => (
                         <table key={message.id}>
                             <tbody>
                                 {
-                                    message.profile.username == username
+                                    message.profile.username === username
                                     ?
                                     <tr className=''>
                                         <td className='text-right w-44 pr-8 font-bold'>
@@ -34,6 +40,7 @@ function Messages({ messages, username }) {
                         </table>
                     ))
                 }
+                <div ref={scrollToRef}></div>
             </div>
         </div>
     );

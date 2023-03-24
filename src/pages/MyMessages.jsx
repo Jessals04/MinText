@@ -1,23 +1,25 @@
 import React, { useEffect } from 'react';
 import MessagesContainer from "../containers/MessagesContainer";
 import SendMessageContainer from "../containers/SendMessageContainer";
-import { useNavigate } from 'react-router-dom';
 
 function MyMessages({ logOut, username }) {
-  const navigate = useNavigate();
 
   // if user is not logged in, navigate to login
   useEffect(() => {
     if (!username) {
-      console.log('no user');
+      console.error('No user loggen in. Redirecting to login.');
       logOut();
     }
   });
 
   return (
-    <div className='flex flex-col mt-auto'>
-      <MessagesContainer username={username} />
-      <SendMessageContainer username={username} />
+    <div className='flex flex-col mt-auto h-full overflow-y-auto'>
+      <div className='pb-16 mt-auto'>
+        <MessagesContainer username={username} />
+      </div>
+      <div className='mt-auto w-full absolute bottom-0'>
+        <SendMessageContainer username={username} />
+      </div>
     </div>
   );
 }
