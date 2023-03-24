@@ -28,7 +28,7 @@ function App() {
   }
 
   return (
-      <div className="flex flex-col h-screen max-h-screen bg-slate-900 text-slate-50 overflow-hidden">
+      <div className="flex flex-col h-screen max-h-screen bg-slate-900 text-slate-50">
         <div className="flex flex-col mx-auto bg-slate-800 w-full p-4 drop-shadow-2xl border-b-2 border-slate-600 z-10">
           <h1 className="text-center text-2xl">
             <Link to={'/'}>
