@@ -5,8 +5,10 @@ function Messages({ messages, username }) {
     const scrollToRef = useRef();
 
     useEffect(() => {
-        scrollToRef.current.scrollIntoView();
-    });
+        setTimeout(() => {
+            scrollToRef.current.scrollIntoView();
+        }, 1000);
+    }, []);
     
     return (
         <div className='p-2 flex'>
