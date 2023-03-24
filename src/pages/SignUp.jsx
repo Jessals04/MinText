@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import CryptoJS, { SHA256, Base64 } from "crypto-js";
 
 function SignUp({ logOut, logIn, user, handleSetUser }) {
+    const [id, setId] = useState('');
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -53,6 +54,7 @@ function SignUp({ logOut, logIn, user, handleSetUser }) {
           email: $email,
           slug: $username
         }) {
+          id,
           username,
           slug
         }
@@ -150,6 +152,7 @@ function SignUp({ logOut, logIn, user, handleSetUser }) {
         .then((res) => res)
         .then((data) => {
             console.log('Account creation successful.');
+            setId(data.profile.id);
         })
         .catch((err) => {
             console.error('Account was not created successfully. The following error message was received:\n----------\n'
@@ -258,7 +261,7 @@ function SignUp({ logOut, logIn, user, handleSetUser }) {
         }
         
         // logIn
-        logIn(username, email);
+        logIn(id, username, email);
 
         // send welcome message
         const content = `👋 Everyone welcome ${username} to MinText!`;

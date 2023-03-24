@@ -20,8 +20,9 @@ function App() {
     navigate('/login');
   }
 
-  function logIn(username, email) {
+  function logIn(id, username, email) {
     setUser({
+      id: id,
       username: username,
       email: email
     });

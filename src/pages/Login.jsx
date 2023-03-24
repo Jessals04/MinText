@@ -3,7 +3,8 @@ import { GraphQLClient, gql } from "graphql-request";
 import { Link, useNavigate } from "react-router-dom";
 import CryptoJS, { SHA256, Base64 } from "crypto-js";
 
-function Login({ user, handleSetUser }) {
+function Login({ logIn, user }) {
+  const [id, setId] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,6 +27,7 @@ function Login({ user, handleSetUser }) {
       profile(where: {
         username: $username
       }) {
+        id,
         password,
         email
       }
@@ -43,6 +45,7 @@ function Login({ user, handleSetUser }) {
     .then((res) => res)
     .then((data) => {
       profile = data.profile;
+      setId(data.profile.id);
     })
     .catch((err) => console.log(err.message));
 
@@ -94,10 +97,7 @@ function Login({ user, handleSetUser }) {
     }
 
     // set user
-    handleSetUser({
-      username: username,
-      email: email
-    });
+    logIn(id, username, email);
 
     // clear fields
     setUsername('');
