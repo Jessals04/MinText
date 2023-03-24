@@ -14,7 +14,7 @@ function MyMessages({ logOut, username }) {
 
   return (
     <div className='flex flex-col mt-auto h-full overflow-y-auto'>
-      <div className='pb-16 mt-auto bottom-0'>
+      <div className='mt-auto absolute bottom-20'>
         <MessagesContainer username={username} />
       </div>
       <div className='mt-auto w-full absolute bottom-0'>
