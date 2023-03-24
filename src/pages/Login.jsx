@@ -115,8 +115,8 @@ function Login({ user, handleSetUser }) {
   
   return (
     <div>
-      <div className='flex m-10'>
-            <div className='flex flex-col gap-4 m-auto border-2 border-slate-600 rounded-lg p-10 bg-slate-800 drop-shadow-lg text-slate-50 px-32 py-16'>
+      <div className='flex my-10 sm:mx-10'>
+            <div className='flex flex-col gap-4 m-auto border-2 border-slate-600 rounded-lg bg-slate-800 drop-shadow-lg text-slate-50 px-8 sm:px-32 py-16 max-w-xs sm:max-w-full'>
                 <h1 className='mx-auto text-2xl'>Login</h1>
                 {
                   usernameExists
@@ -128,7 +128,7 @@ function Login({ user, handleSetUser }) {
                                                             Please try again or <Link to={'/signup'} className="underline">sign up</Link>
                                                             </h2>
                 }
-                <input value={username} onChange={onUsernameChange} className='bg-slate-600 rounded-lg p-2 w-80' type="text" placeholder='Username' />
+                <input value={username} onChange={onUsernameChange} className='bg-slate-600 rounded-lg p-2 w-58 sm:w-80' type="text" placeholder='Username' />
                 {
                   passwordIncorrect
                   ?
@@ -139,7 +139,7 @@ function Login({ user, handleSetUser }) {
                   :
                   <></>
                 }
-                <input value={password} onChange={onPasswordChange} className='bg-slate-600 rounded-lg p-2 w-80' type="password" placeholder='Password' />
+                <input value={password} onChange={onPasswordChange} className='bg-slate-600 rounded-lg p-2 w-58 sm:w-80' type="password" placeholder='Password' />
                 <button className="mx-auto border-2 border-slate-300 rounded-lg w-32 hover:bg-slate-600 active:bg-slate-500" type="submit" onClick={handleSubmit}>Let's go!</button>
             </div>
         </div>
