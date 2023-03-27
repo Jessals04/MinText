@@ -1,9 +1,7 @@
 
 function CreateChatBtn() {
     return (
-        <div>
-
-        </div>
+        <div></div>
     );
 }
 

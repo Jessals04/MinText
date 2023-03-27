@@ -4,13 +4,13 @@ import { Link, useNavigate } from "react-router-dom";
 import CryptoJS, { SHA256, Base64 } from "crypto-js";
 
 function Login({ logIn, user }) {
-  const [id, setId] = useState('');
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [usernameExists, setUsernameExists] = useState(true);
   const [passwordIncorrect, setPasswordIncorrect] = useState(false);
   const navigate = useNavigate();
+  let id = '';
+  let email = '';
 
   // create a GraphQLClient instance
   const hygraph = new GraphQLClient(
@@ -44,8 +44,9 @@ function Login({ logIn, user }) {
     await hygraph.request(GETPROFILEPASSQUERY, { username: username })
     .then((res) => res)
     .then((data) => {
+      id = data.profile.id;
+      email = data.profile.email;
       profile = data.profile;
-      setId(data.profile.id);
     })
     .catch((err) => console.log(err.message));
 
@@ -54,7 +55,7 @@ function Login({ logIn, user }) {
       setUsernameExists(false);
       return false;
     }
-
+    
     // hash password provided by user
     const hashedPassAsWordArray = CryptoJS.SHA256(password);
     const hashedPass = hashedPassAsWordArray.toString(CryptoJS.enc.Base64);
@@ -64,8 +65,6 @@ function Login({ logIn, user }) {
 
     if (!passwordsMatch) {
       return false;
-    } else {
-      setEmail(profile.email);
     }
     
     return true;
@@ -111,7 +110,7 @@ function Login({ logIn, user }) {
   // if user is already logged in, navigate back to home
   useEffect(() => {
     if (user.username) navigate('/');
-  });
+  }, []);
   
   return (
     <div>

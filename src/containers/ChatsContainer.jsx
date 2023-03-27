@@ -1,5 +1,5 @@
 import { GraphQLClient, gql } from "graphql-request";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
 // import components
 import Chats from "../components/Chats";
@@ -32,7 +32,9 @@ function ChatsContainer({ user }) {
 
     // a function that gets the lists of chats and set's the chats state
     async function getAndSetChats() {
-        await hygraph.request(GETCHATSQUERY)
+        await hygraph.request(GETCHATSQUERY, {
+            id: user.id
+        })
         .then((res) => res)
         .then((data) => {
             // sets chats with received data as an array
