@@ -21,7 +21,7 @@ function Messages({ messages, username }) {
                                     message.profile.username === username
                                     ?
                                     <tr className=''>
-                                        <td className='text-right w-44 pr-8 font-bold'>
+                                        <td className='text-right w-44 pr-8 font-bold align-text-top'>
                                             {message.profile.username}:
                                         </td>
                                         <td>
@@ -30,7 +30,7 @@ function Messages({ messages, username }) {
                                     </tr>
                                     :
                                     <tr className=''>
-                                        <td className='text-right w-44 pr-8'>
+                                        <td className='text-right w-44 pr-8 align-text-top'>
                                             {message.profile.username}:
                                         </td>
                                         <td>
