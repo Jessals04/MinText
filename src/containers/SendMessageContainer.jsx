@@ -4,7 +4,7 @@ import { useState } from "react";
 import { GraphQLClient, gql } from "graphql-request";
 import { useNavigate } from 'react-router-dom';
 
-function SendMessageContainer({ username }) {
+function SendMessageContainer({ username, chatId }) {
     const [text, setText] = useState('');
     const navigate = useNavigate();
 
@@ -19,54 +19,74 @@ function SendMessageContainer({ username }) {
 
     // create a query to create new message
     const SENDMESSAGEQUERY = gql`
-        mutation AddMessage($content: String!, $username: String!) {
-            createMessage (
-                data: {
-                    content: $content,
-                    profile: {
-                        connect: {
-                        username: $username
-                    }
-                }
-            }) {
-                id
+      mutation AddMessage($content: String!, $username: String!, $chatId: ID!) {
+        createMessage (data: {
+          content: $content,
+          profile: {
+            connect: {
+              username: $username
             }
-
-            publishManyMessagesConnection (last: 1, from: DRAFT, to: PUBLISHED) {
-                edges {
-                  node {
-                    id
-                  }
-                }
+          },
+          chat: {
+            connect: {
+              id: $chatId
             }
-        }
-    `;
-
-    // create a query to publish message
-    const PUBLISHMESSAGEQUERY = gql`
-        mutation PublishMessage($id: ID) {
-          publishMessage(where: {id: $id}, to: PUBLISHED) {
-            id
+          }
+        }) {
+          id,
+          content,
+          profile {
+            username
           }
         }
+        
+        publishManyMessagesConnection (from: DRAFT, to: PUBLISHED) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
+      }
+    `;
+
+    const PUBLISHMESSAGEMUTATION = gql`
+      mutation PublishMessage($id: ID) {
+        publishMessage(where: {id: $id}, to: PUBLISHED) {
+          id
+        }
+      }
     `;
 
     // create query variables
     const variables = {
         content: text,
-        username: username
+        username: username,
+        chatId: chatId
     };
 
     function handleChange(value) {
         setText(value);
     };
 
+    async function publishMessage(id) {
+        await hygraph.request(PUBLISHMESSAGEMUTATION, {
+            id: id
+        })
+        .catch((err) => console.log(err.message))
+    }
+
     async function handleClick() {
         // perform query if text length greater than 0
-        if (text == '') return;
+        if (text === '') return;
 
         // create message
-        const data = await hygraph.request(SENDMESSAGEQUERY, variables).catch((err) => {
+        await hygraph.request(SENDMESSAGEQUERY, variables)
+        .then((res) => res)
+        .then((data) => {
+            publishMessage(data.createMessage.id);
+        })
+        .catch((err) => {
             console.log(err.message);
             navigate('/login');
         });

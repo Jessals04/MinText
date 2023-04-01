@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import Chats from "../components/Chats";
 import CreateChatBtn from "../components/CreateChatBtn";
 
-function ChatsContainer({ user }) {
+function ChatsContainer({ user, handleChatIdChange }) {
     const [chats, setChats] = useState([]);
 
     // create a GraphQLClient instance
@@ -49,7 +49,7 @@ function ChatsContainer({ user }) {
 
     return (
         <div>
-            <Chats chats={chats} />
+            <Chats chats={chats} handleChatIdChange={handleChatIdChange} />
             <CreateChatBtn />
         </div>
     );
