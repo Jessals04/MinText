@@ -26,8 +26,8 @@ function MyMessages({ logOut, user }) {
         <ChatsContainer handleChatIdChange={handleChatIdChange} user={user} />
       </div>
 
-      <div className='flex flex-col mt-auto ml-auto w-2/3 pr-8'>
-        <div className='mt-auto pt-16 relative bottom-16'>
+      <div className='flex flex-col mt-auto ml-auto w-2/3 h-full'>
+        <div className='h-full pt-16 relative bottom-16'>
           <CurrentChatsContainer username={user.username} chatId={currentChatId} />
         </div>
         <div className='mt-auto w-2/3 absolute bottom-0'>

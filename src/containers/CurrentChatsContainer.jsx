@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import CurrentChats from "../components/CurrentChats";
 import { GraphQLClient, gql } from "graphql-request";
+import CurrentChatInfo from "../components/CurrentChatInfo";
 
 
 function CurrentChatsContainer({ chatId, username }) {
     const [messages, setMessages] = useState([]);
+    const [currentChatData, setcurrentChatData] = useState({});
 
     // create a GraphQLClient instance
     const hygraph = new GraphQLClient(
@@ -20,6 +22,8 @@ function CurrentChatsContainer({ chatId, username }) {
       query GetChatData($id: ID!) {
         chat(where: { id: $id}) {
           id,
+          chatName,
+          description,
           profiles {
             username
           },
@@ -42,6 +46,11 @@ function CurrentChatsContainer({ chatId, username }) {
         .then((res) => res)
         .then((data) => {
             setMessages(data.chat.messages);
+            setcurrentChatData({
+                chatName: data.chat.chatName,
+                description: data.chat.description,
+                users: data.chat.profiles
+            });
         })
         .catch((err) => {
             console.log(err.message);
@@ -62,7 +71,8 @@ function CurrentChatsContainer({ chatId, username }) {
     });
     
     return (
-        <div>
+        <div className="flex flex-col justify-between h-full">
+            <CurrentChatInfo chatData={currentChatData} />
             <CurrentChats messages={messages} username={username} />
         </div>
     );
