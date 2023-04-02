@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import MyMessages from "./pages/MyMessages";
+import CreateChat from "./pages/CreateChat";
 
 function App() {
   const [user, setUser] = useState({});
@@ -68,6 +69,7 @@ function App() {
         <Routes>
           <Route exact path="/" Component={Home} />
           <Route exact path="/my-messages" element={ <MyMessages logOut={logOut} user={user} /> } />
+          <Route exact path="/create-chat" element={ <CreateChat user={user} /> } />
           <Route exact path="/login" element={ <Login logIn={logIn} user={user} handleSetUser={handleSetUser} /> } />
           <Route exact path="/signup" element={ <SignUp logIn={logIn} user={user} handleSetUser={handleSetUser} /> } />
         </Routes>
