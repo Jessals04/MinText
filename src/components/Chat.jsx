@@ -6,7 +6,7 @@ function Chat({ chat, handleChatIdChange }) {
     }
     return (
         <div className="h-10 flex px-4 hover:bg-slate-700 active:bg-slate-600" onClick={handleClick}>
-            <h1 className="my-auto">{chat.chatName}</h1>
+            <h1 className="my-auto text-sm lg:text-base">{chat.chatName}</h1>
         </div>
     );
 }

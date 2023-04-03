@@ -54,9 +54,12 @@ function ChatsContainer({ user, handleChatIdChange }) {
     });
 
     return (
-        <div>
+        <div className="flex flex-col h-screen">
+            <div className="">
+                <CreateChatBtn />
+            </div>
+
             <Chats chats={chats} handleChatIdChange={handleChatIdChange} />
-            <CreateChatBtn />
         </div>
     );
 }

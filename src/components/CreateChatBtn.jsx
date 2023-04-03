@@ -9,8 +9,13 @@ function CreateChatBtn() {
                 onClick={() => {
                     navigate('/create-chat');
                 }}
-                className="py-2 px-4 text-sm border-2 rounded-lg hover:bg-slate-700 active:bg-slate-600"
-            >+ Create Chat</button>
+                className="py-1 md:py-2 px-2 md:px-4 text-sm border-2 rounded-lg hover:bg-slate-700 active:bg-slate-60 w-full flex gap-2 justify-center"
+            >+ 
+              <span
+                className="hidden md:block"
+              >Create Chat
+              </span>
+            </button>
         </div>
     );
 }
