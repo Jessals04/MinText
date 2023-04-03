@@ -91,6 +91,14 @@ function CreateChatFieldsContainer({ user }) {
       }
     `;
 
+    const PUBLISHPROFILEMUTATION = gql`
+      mutation PublishProfile($username: String!) {
+        publishProfile(where: { username: $username }, to: PUBLISHED) {
+          stage
+        }
+      }
+    `;
+
     async function createChat(chatName, description, members) {
         const chatId = await createChatWithoutMembers(chatName, description);
         await hygraph.request(PUBLISHCHATMUTATION, {
@@ -104,11 +112,15 @@ function CreateChatFieldsContainer({ user }) {
         // wait 1 second to avoid too many requests to database
         setTimeout(() => chatId, 500);
 
+        await sendChatCreatedMessage(chatName, chatId);
+        
+        // publish chat and profile after changing their relations
         await hygraph.request(PUBLISHCHATMUTATION, {
             chatId: chatId
         });
-
-        sendChatCreatedMessage(chatName, chatId);
+        await hygraph.request(PUBLISHPROFILEMUTATION, {
+          username: user.username
+        });
 
         navigate('/my-messages');
     }

@@ -20,8 +20,8 @@ function ChatsContainer({ user, handleChatIdChange }) {
     // create a query that gets the chats in which the
     // logged in user is a member
     const GETCHATSQUERY = gql`
-      query GetUsersChats($id: ID!) {
-        profile(where: {id: $id}) {
+      query GetUsersChats($username: String!) {
+        profile(where: {username: $username}) {
           chats {
             id,
             chatName
@@ -33,7 +33,7 @@ function ChatsContainer({ user, handleChatIdChange }) {
     // a function that gets the lists of chats and set's the chats state
     async function getAndSetChats() {
         await hygraph.request(GETCHATSQUERY, {
-            id: user.id
+            username: user.username
         })
         .then((res) => res)
         .then((data) => {
@@ -44,7 +44,13 @@ function ChatsContainer({ user, handleChatIdChange }) {
     }
 
     useEffect(() => {
-        getAndSetChats();
+        const intervalID = setInterval(() => {
+            getAndSetChats();
+        }, 1000);
+
+        return () => {
+            clearInterval(intervalID);
+        }
     });
 
     return (
