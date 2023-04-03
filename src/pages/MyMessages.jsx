@@ -9,7 +9,6 @@ function MyMessages({ logOut, user }) {
 
   function handleChatIdChange(newChatId) {
     setCurrentChatId(newChatId);
-    console.log(currentChatId);
   }
 
   // if user is not logged in, navigate to login

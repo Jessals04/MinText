@@ -1,7 +1,9 @@
 import CreateChatFields from "../components/CreateChatFields";
 import { GraphQLClient, gql } from "graphql-request";
+import { useNavigate } from "react-router-dom";
 
 function CreateChatFieldsContainer({ user }) {
+    const navigate = useNavigate();
 
     // create a GraphQLClient instance
     const hygraph = new GraphQLClient(
@@ -81,39 +83,44 @@ function CreateChatFieldsContainer({ user }) {
 
     const PUBLISHCHATMUTATION = gql`
       mutation PublishChat($chatId: ID!) {
-        publishChat(
-          where: {
-            id: $chatId
-          },
-            to: PUBLISHED
-        ) {
+        publishChat(to: PUBLISHED, where: {
+          id: $chatId
+        }) {
           id
         }
       }
     `;
 
     async function createChat(chatName, description, members) {
-        const chatId = createChatWithoutMembers(chatName, description);
+        const chatId = await createChatWithoutMembers(chatName, description);
         await hygraph.request(PUBLISHCHATMUTATION, {
             chatId: chatId
         });
 
-        members.forEach((member) => {
+        await members.forEach((member) => {
             addMemberToChat(member, chatId)
         });
+
+        // wait 1 second to avoid too many requests to database
+        setTimeout(() => chatId, 500);
+
+        await hygraph.request(PUBLISHCHATMUTATION, {
+            chatId: chatId
+        });
+
+        sendChatCreatedMessage(chatName, chatId);
+
+        navigate('/my-messages');
     }
 
     async function createChatWithoutMembers(chatName, description) {
         let chatId = ''
-        console.log(chatName);
-        console.log(description);
         await hygraph.request(CREATENEWCHATMUTATION, {
             chatName: chatName,
             description: description
         })
         .then((res) => res)
         .then((data) => {
-            console.log(data.createChat.id);
             chatId = data.createChat.id;
         })
         .catch((err) => console.log(err.message));
@@ -130,9 +137,48 @@ function CreateChatFieldsContainer({ user }) {
         .catch((err) => console.log(err.message));
     }
 
+    const CHATCREATEDMESSAGEMUTATION = gql`
+      mutation SendChatCreatedMessage($chatId: ID!, $username: String!, $content: String!) {
+        createMessage (data: {
+          profile: {
+            connect: {
+              username: $username
+            }
+          },
+          content: $content,
+          chat: {
+            connect: {
+              id: $chatId
+            }
+          }
+        }) {
+          id
+        }
+
+        publishManyMessagesConnection (last: 1, from: DRAFT, to: PUBLISHED) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
+      }
+    `;
+
+    async function sendChatCreatedMessage(chatName, chatId) {
+        const chatCreatedMessageContent = `👋 Welcome to ${chatName}!`
+
+        await hygraph.request(CHATCREATEDMESSAGEMUTATION, {
+            chatId: chatId,
+            username: user.username,
+            content: chatCreatedMessageContent
+        })
+        .catch((err) => console.log(err.message));
+    }
+
     return (
         <div className='m-auto border-2 border-slate-600 rounded-lg bg-slate-800 drop-shadow-lg text-slate-50 px-8 sm:px-32 py-16 max-w-xs sm:max-w-full'>
-            <CreateChatFields searchForProfile={searchForProfile} createChat={createChat} />
+            <CreateChatFields searchForProfile={searchForProfile} createChat={createChat} username={user.username} />
         </div>
     );
 }

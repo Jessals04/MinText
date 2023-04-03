@@ -45,7 +45,7 @@ function ChatsContainer({ user, handleChatIdChange }) {
 
     useEffect(() => {
         getAndSetChats();
-    }, []);
+    });
 
     return (
         <div>

@@ -1,9 +1,9 @@
 import { useState } from "react";
 
-function CreateChatFields({ searchForProfile, createChat }) {
+function CreateChatFields({ searchForProfile, createChat, username }) {
     const [chatName, setChatName] = useState('');
     const [description, setDescription] = useState('');
-    const [members, setMembers] = useState([]);
+    const [members, setMembers] = useState([username]);
     const [memberToSearchFor, setMemberToSearchFor] = useState('');
     const [showChatNameEmpty, setShowChatNameEmpty] = useState(false);
     const [showMembersEmpty, setShowMembersEmpty] = useState(false);
@@ -20,7 +20,7 @@ function CreateChatFields({ searchForProfile, createChat }) {
     }
     
     function onSearchForMembersChange({ target }) {
-        setMemberToSearchFor(target.value);
+        setMemberToSearchFor(target.value.toLowerCase());
         setShowMembersEmpty(false);
         setShowMemberNotExists(false);
         setShowMemberAlreadyAdded(false);

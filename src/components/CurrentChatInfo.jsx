@@ -24,7 +24,7 @@ function CurrentChatInfo({ chatData }) {
                             <h2>Members:</h2>
                             {
                                 chatData.users.map((user) => (
-                                    <li>`{user.username}`</li>
+                                    <li key={user.username}>`{user.username}`</li>
                                 ))
                             }
                         </div>

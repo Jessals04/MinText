@@ -53,7 +53,9 @@ function CurrentChatsContainer({ chatId, username }) {
             });
         })
         .catch((err) => {
-            console.log(err.message);
+            if (!err.message.includes('data.chat is null')) {
+                console.log(err.message);
+            }
         });
     }
 
