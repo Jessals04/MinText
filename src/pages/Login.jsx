@@ -3,13 +3,14 @@ import { GraphQLClient, gql } from "graphql-request";
 import { Link, useNavigate } from "react-router-dom";
 import CryptoJS, { SHA256, Base64 } from "crypto-js";
 
-function Login({ user, handleSetUser }) {
+function Login({ logIn, user }) {
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [usernameExists, setUsernameExists] = useState(true);
   const [passwordIncorrect, setPasswordIncorrect] = useState(false);
   const navigate = useNavigate();
+  let id = '';
+  let email = '';
 
   // create a GraphQLClient instance
   const hygraph = new GraphQLClient(
@@ -26,6 +27,7 @@ function Login({ user, handleSetUser }) {
       profile(where: {
         username: $username
       }) {
+        id,
         password,
         email
       }
@@ -42,6 +44,8 @@ function Login({ user, handleSetUser }) {
     await hygraph.request(GETPROFILEPASSQUERY, { username: username })
     .then((res) => res)
     .then((data) => {
+      id = data.profile.id;
+      email = data.profile.email;
       profile = data.profile;
     })
     .catch((err) => console.log(err.message));
@@ -51,7 +55,7 @@ function Login({ user, handleSetUser }) {
       setUsernameExists(false);
       return false;
     }
-
+    
     // hash password provided by user
     const hashedPassAsWordArray = CryptoJS.SHA256(password);
     const hashedPass = hashedPassAsWordArray.toString(CryptoJS.enc.Base64);
@@ -61,8 +65,6 @@ function Login({ user, handleSetUser }) {
 
     if (!passwordsMatch) {
       return false;
-    } else {
-      setEmail(profile.email);
     }
     
     return true;
@@ -94,10 +96,7 @@ function Login({ user, handleSetUser }) {
     }
 
     // set user
-    handleSetUser({
-      username: username,
-      email: email
-    });
+    logIn(id, username, email);
 
     // clear fields
     setUsername('');
@@ -111,7 +110,7 @@ function Login({ user, handleSetUser }) {
   // if user is already logged in, navigate back to home
   useEffect(() => {
     if (user.username) navigate('/');
-  });
+  }, []);
   
   return (
     <div>

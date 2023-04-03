@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import CryptoJS, { SHA256, Base64 } from "crypto-js";
 
 function SignUp({ logOut, logIn, user, handleSetUser }) {
+    const [id, setId] = useState('');
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -53,6 +54,7 @@ function SignUp({ logOut, logIn, user, handleSetUser }) {
           email: $email,
           slug: $username
         }) {
+          id,
           username,
           slug
         }
@@ -63,27 +65,11 @@ function SignUp({ logOut, logIn, user, handleSetUser }) {
       }
     `;
 
-    // create a mutation to create a welcome message
-    const SENDWELCOMEMESSAGEMUTATION = gql`
-      mutation AddMessage($content: String!, $username: String!) {
-        createMessage (
-            data: {
-                content: $content,
-                profile: {
-                    connect: {
-                    username: $username
-                }
-            }
-        }) {
-            id
-        }
-
-        publishManyMessagesConnection (last: 1, from: DRAFT, to: PUBLISHED) {
-            edges {
-              node {
-                id
-              }
-            }
+    // create a query to publish the user's profile again
+    const PUBLISHPROFILEMUTATION = gql`
+      mutation PublishProfile($username: String!) {
+        publishProfile(where: { username: $username }, to: PUBLISHED) {
+          stage
         }
       }
     `;
@@ -150,14 +136,20 @@ function SignUp({ logOut, logIn, user, handleSetUser }) {
         .then((res) => res)
         .then((data) => {
             console.log('Account creation successful.');
+            setId(data.createProfile.id);
         })
         .catch((err) => {
             console.error('Account was not created successfully. The following error message was received:\n----------\n'
                           + err.message
-                          + '----------');
+                          + '\n----------');
             setShowErrorMessage(true);
             returnTrue = false;
         });
+
+        await hygraph.request(PUBLISHPROFILEMUTATION, {
+            username: newUsername
+        })
+        .catch((err) => console.log(err.message));
 
         return returnTrue;
     }
@@ -196,27 +188,6 @@ function SignUp({ logOut, logIn, user, handleSetUser }) {
         }
 
         return fieldsLegal;
-    }
-
-    // function to send welcome message on sign up
-    // will return true if successful, else false
-    async function sendWelcomeMessage(usernameToSendFrom, content) {
-        let returnTrue = true;
-
-        await hygraph.request(SENDWELCOMEMESSAGEMUTATION, {
-            username: usernameToSendFrom,
-            content: content
-        })
-        .then((res) => res)
-        .then((data) => data)
-        .catch((err) => {
-            console.error('There was an error sending the welcome message. The following error message was received:\n----------\n'
-                          + err.message
-                          + '----------');
-            returnTrue = false;
-        });
-        
-        return returnTrue;
     }
 
     // onChange functions
@@ -258,15 +229,7 @@ function SignUp({ logOut, logIn, user, handleSetUser }) {
         }
         
         // logIn
-        logIn(username, email);
-
-        // send welcome message
-        const content = `👋 Everyone welcome ${username} to MinText!`;
-        const welcomeMessageSuccess = await sendWelcomeMessage(username, content);
-        if (welcomeMessageSuccess === false) {
-            logOut();
-            return;
-        }
+        logIn(id, username, email);
 
         // clear fields
         setUsername('');
