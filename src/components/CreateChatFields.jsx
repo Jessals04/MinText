@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function CreateChatFields({ searchForProfile, createChat, username }) {
     const [chatName, setChatName] = useState('');
@@ -9,6 +10,8 @@ function CreateChatFields({ searchForProfile, createChat, username }) {
     const [showMembersEmpty, setShowMembersEmpty] = useState(false);
     const [showMemberNotExists, setShowMemberNotExists] = useState(false);
     const [showMemberAlreadyAdded, setShowMemberAlreadyAdded] = useState(false);
+
+    const navigate = useNavigate();
 
     function onChatNameChange({ target }) {
         setChatName(target.value);
@@ -65,61 +68,67 @@ function CreateChatFields({ searchForProfile, createChat, username }) {
     }
 
     return (
-        <div className="flex flex-col gap-4 justify-center content-center">
-            <h1 className='mx-auto text-2xl'>Create New Chat</h1>
-            {
-                    showChatNameEmpty
-                    ?
-                    <h2 className="text-orange-600 text-sm">Please enter a chat name.</h2>
-                    :
-                    <></>
-            }
-            <input value={chatName} onChange={onChatNameChange} className='bg-slate-600 rounded-lg p-2 w-58 sm:w-80' type="text" placeholder='Chat name' />
-            <input value={description} onChange={onDescriptionChange} className='bg-slate-600 rounded-lg p-2 w-58 sm:w-80' type="text" placeholder='Description' />
+        <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-4 justify-center content-center mx-auto">
+                <h1 className='mx-auto text-2xl'>Create New Chat</h1>
+                {
+                        showChatNameEmpty
+                        ?
+                        <h2 className="text-orange-600 text-sm">Please enter a chat name.</h2>
+                        :
+                        <></>
+                }
+                <input value={chatName} onChange={onChatNameChange} className='bg-slate-600 rounded-lg p-2 w-58 sm:w-80' type="text" placeholder='Chat name' />
+                <input value={description} onChange={onDescriptionChange} className='bg-slate-600 rounded-lg p-2 w-58 sm:w-80' type="text" placeholder='Description' />
 
-            {
-                members.length === 0
-                ?
-                <h2 className="text-sm">Please select some members.</h2>
-                :
-                <div>
-                    <h2>Members:</h2>
-                    <ul className="text-sm">
-                        {
-                            members.map((member) => (
-                                <li key={member}>{member}</li>
-                            ))
-                        }
-                    </ul>
-                </div>
-            }
+                {
+                    members.length === 0
+                    ?
+                    <h2 className="text-sm">Please select some members.</h2>
+                    :
+                    <div>
+                        <h2>Members:</h2>
+                        <ul className="text-sm">
+                            {
+                                members.map((member) => (
+                                    <li key={member}>{member}</li>
+                                ))
+                            }
+                        </ul>
+                    </div>
+                }
 
-            {/* Messages for members field. */}
-            {
-                    showMembersEmpty
-                    ?
-                    <h2 className="text-orange-600 text-sm">Please add at least one member.</h2>
-                    :
-                    <></>
-            }
-            {
-                    showMemberNotExists
-                    ?
-                    <h2 className="text-orange-600 text-sm">That username does not exists.</h2>
-                    :
-                    <></>
-            }
-            {
-                    showMemberAlreadyAdded
-                    ?
-                    <h2 className="text-orange-600 text-sm">You have already added that member.</h2>
-                    :
-                    <></>
-            }
-            <input value={memberToSearchFor} onChange={onSearchForMembersChange} className='bg-slate-600 rounded-lg p-2 w-58 sm:w-80' type="text" placeholder='Search for a username' />
-            <button className="mx-auto border-2 border-slate-300 rounded-lg w-32 hover:bg-slate-600 active:bg-slate-500 mb-4" type="submit" onClick={handleMemberSubmit}>Search</button>
+                {/* Messages for members field. */}
+                {
+                        showMembersEmpty
+                        ?
+                        <h2 className="text-orange-600 text-sm">Please add at least one member.</h2>
+                        :
+                        <></>
+                }
+                {
+                        showMemberNotExists
+                        ?
+                        <h2 className="text-orange-600 text-sm">That username does not exists.</h2>
+                        :
+                        <></>
+                }
+                {
+                        showMemberAlreadyAdded
+                        ?
+                        <h2 className="text-orange-600 text-sm">You have already added that member.</h2>
+                        :
+                        <></>
+                }
+                <input value={memberToSearchFor} onChange={onSearchForMembersChange} className='bg-slate-600 rounded-lg p-2 w-58 sm:w-80' type="text" placeholder='Search for a username' />
+                <button className="mx-auto text-sm md:text-base hover:underline active:text-slate-200" type="submit" onClick={handleMemberSubmit}>+ Add Member</button>
+            </div>
 
-            <button className="mx-auto border-2 border-slate-300 rounded-lg w-32 hover:bg-slate-600 active:bg-slate-500" type="submit" onClick={handleSubmit}>Let's go!</button>
+            <div className="flex flex-col md:flex-row gap-4 md:gap-0 text-sm">
+                <button className="mx-auto border-2 border-slate-500 text-slate-400 rounded-lg w-32 py-1 hover:bg-slate-700 active:bg-slate-600" type="submit" onClick={() => navigate('/my-messages')}>Cancel</button>
+
+                <button className="mx-auto border-2 border-slate-00 rounded-lg w-32 py-1 hover:bg-slate-700 active:bg-slate-600" type="submit" onClick={handleSubmit}>Let's go!</button>
+            </div>
         </div>
     );
 }
