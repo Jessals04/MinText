@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { GraphQLClient, gql } from "graphql-request";
 import { Link, useNavigate } from "react-router-dom";
-import CryptoJS, { SHA256, Base64 } from "crypto-js";
+import Hash from "../utils/Hash";
 
 function SignUp({ logOut, logIn, user, handleSetUser }) {
     const [id, setId] = useState('');
@@ -124,8 +124,7 @@ function SignUp({ logOut, logIn, user, handleSetUser }) {
     // returns true if mutation was successful, false if not
     async function createNewProfile(newUsername, newEmail, newPassword) {
         // hash password
-        const hashedPassAsWordArray = CryptoJS.SHA256(newPassword);
-        const hashedPass = hashedPassAsWordArray.toString(CryptoJS.enc.Base64);
+        const hashedPass = Hash(newPassword);
         let returnTrue = true;
         
         await hygraph.request(CREATENEWPROFILEMUTATION, {
