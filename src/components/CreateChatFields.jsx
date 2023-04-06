@@ -60,7 +60,6 @@ function CreateChatFields({ searchForProfile, createChat, username }) {
             return;
         }
 
-        console.log('fields legal');
         createChat(chatName, description, members);
 
     }

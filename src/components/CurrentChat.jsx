@@ -1,5 +1,8 @@
+import Decrypt from "../utils/Decrypt";
 
 function CurrentChat({ message, username }) {
+    const content = Decrypt(message.content);
+
     return (
         <div className="text-sm md:text-base">
             <table>
@@ -12,7 +15,7 @@ function CurrentChat({ message, username }) {
                                 {message.profile.username}:
                             </td>
                             <td>
-                                {message.content}
+                                {content}
                             </td>
                         </tr>
                         :
@@ -21,7 +24,7 @@ function CurrentChat({ message, username }) {
                                 {message.profile.username}:
                             </td>
                             <td>
-                                {message.content}
+                                {content}
                             </td>
                         </tr>
                     }

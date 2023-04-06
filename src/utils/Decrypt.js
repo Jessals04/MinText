@@ -2,7 +2,8 @@ import CryptoJS from "crypto-js";
 import { getMessagesKey } from "./Keys";
 
 export default function Decrypt(encryptedBase64) {
-    const decrypted = CryptoJS.AES.decrypt(encryptedBase64, () => getMessagesKey());
+    const key = getMessagesKey();
+    const decrypted = CryptoJS.AES.decrypt(encryptedBase64, key);
 
     if (decrypted) {
         try {

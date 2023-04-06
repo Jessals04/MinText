@@ -3,6 +3,7 @@ import SendMessage from "../components/SendMessage";
 import { useState } from "react";
 import { GraphQLClient, gql } from "graphql-request";
 import { useNavigate } from 'react-router-dom';
+import Encrypt from '../utils/Encrypt';
 
 function SendMessageContainer({ username, chatId }) {
     const [text, setText] = useState('');
@@ -58,13 +59,6 @@ function SendMessageContainer({ username, chatId }) {
       }
     `;
 
-    // create query variables
-    const variables = {
-        content: text,
-        username: username,
-        chatId: chatId
-    };
-
     function handleChange(value) {
         setText(value);
     };
@@ -80,8 +74,14 @@ function SendMessageContainer({ username, chatId }) {
         // perform query if text length greater than 0
         if (text === '') return;
 
+        const content = Encrypt(text);
+
         // create message
-        await hygraph.request(SENDMESSAGEQUERY, variables)
+        await hygraph.request(SENDMESSAGEQUERY, {
+          content: content,
+          username: username,
+          chatId: chatId
+        })
         .then((res) => res)
         .then((data) => {
             publishMessage(data.createMessage.id);

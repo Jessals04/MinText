@@ -8,7 +8,8 @@ import { getMessagesKey } from "./Keys";
  */
 
 export default function Encrypt(text) {
-    return CryptoJS.AES.encrypt(text, () => getMessagesKey()).toString();
+    const key = getMessagesKey();
+    return CryptoJS.AES.encrypt(text, key).toString();
 }
 
 export function encryptWithCustomKey(text, key) {

@@ -3,7 +3,6 @@ import CurrentChats from "../components/CurrentChats";
 import { GraphQLClient, gql } from "graphql-request";
 import CurrentChatInfo from "../components/CurrentChatInfo";
 
-
 function CurrentChatsContainer({ chatId, username }) {
     const [messages, setMessages] = useState([]);
     const [currentChatData, setcurrentChatData] = useState({});
