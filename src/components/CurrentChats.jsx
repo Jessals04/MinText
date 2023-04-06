@@ -11,7 +11,7 @@ function CurrentChats({ messages, username, showMessageTooLongMessage }) {
     }, []);
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col pr-2 pt-24">
             {
                 messages.map((message) => (
                     <CurrentChat key={message.id} message={message} username={username} />

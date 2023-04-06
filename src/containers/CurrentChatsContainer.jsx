@@ -31,7 +31,8 @@ function CurrentChatsContainer({ chatId, username, showMessageTooLongMessage }) 
             profile {
               username
             }
-            content
+            content,
+            createdAt
           }
         }
       }
@@ -73,7 +74,9 @@ function CurrentChatsContainer({ chatId, username, showMessageTooLongMessage }) 
     
     return (
         <div className="flex flex-col justify-between h-full">
-            <CurrentChatInfo chatData={currentChatData} />
+            <div className="fixed w-full">
+                <CurrentChatInfo chatData={currentChatData} />
+            </div>
             <CurrentChats messages={messages} username={username} showMessageTooLongMessage={showMessageTooLongMessage} />
         </div>
     );

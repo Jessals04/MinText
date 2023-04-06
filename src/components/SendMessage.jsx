@@ -9,6 +9,16 @@ function SendMessage(props) {
         }
     };
 
+    // ------------------------------
+    // altered from
+    // https://reactgo.com/react-trigger-button-click/
+    const handleKeyDown = e => {
+        if (e.keyCode === 13) {
+            props.handleClick();
+        }
+    };
+    // ------------------------------
+
     return (
         <div className="w-full flex pb-4 drop-shadow-2xl border-t-2 border-slate-600 bg-gradient-to-t from-slate-900 to-slate-800">
             <input
@@ -16,6 +26,7 @@ function SendMessage(props) {
                 value={props.value}
                 type="text"
                 onChange={handleChange}
+                onKeyDown={handleKeyDown}
             />
             <button
                 className="m-2 pr-2 text-green-600 ml-auto"
