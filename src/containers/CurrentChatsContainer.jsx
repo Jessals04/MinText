@@ -3,7 +3,7 @@ import CurrentChats from "../components/CurrentChats";
 import { GraphQLClient, gql } from "graphql-request";
 import CurrentChatInfo from "../components/CurrentChatInfo";
 
-function CurrentChatsContainer({ chatId, username }) {
+function CurrentChatsContainer({ chatId, username, showMessageTooLongMessage }) {
     const [messages, setMessages] = useState([]);
     const [currentChatData, setcurrentChatData] = useState({});
 
@@ -74,7 +74,7 @@ function CurrentChatsContainer({ chatId, username }) {
     return (
         <div className="flex flex-col justify-between h-full">
             <CurrentChatInfo chatData={currentChatData} />
-            <CurrentChats messages={messages} username={username} />
+            <CurrentChats messages={messages} username={username} showMessageTooLongMessage={showMessageTooLongMessage} />
         </div>
     );
 }

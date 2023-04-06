@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import ChatsContainer from '../containers/ChatsContainer';
 import CurrentChatsContainer from '../containers/CurrentChatsContainer';
-import MessagesContainer from "../containers/MessagesContainer";
 import SendMessageContainer from "../containers/SendMessageContainer";
 
 function MyMessages({ logOut, user }) {
   const [currentChatId, setCurrentChatId] = useState('');
+  const [showMessageTooLongMessage, setShowMessageTooLongMessage] = useState(false);
+
+  function toggleSetShowMessageTooLongMessage() {
+    setShowMessageTooLongMessage(!showMessageTooLongMessage);
+  }
 
   function handleChatIdChange(newChatId) {
     setCurrentChatId(newChatId);
@@ -27,10 +31,10 @@ function MyMessages({ logOut, user }) {
 
       <div className='flex flex-col mt-auto ml-auto w-2/3 h-full'>
         <div className='h-full pt-16 relative bottom-16'>
-          <CurrentChatsContainer username={user.username} chatId={currentChatId} />
+          <CurrentChatsContainer username={user.username} chatId={currentChatId} showMessageTooLongMessage={showMessageTooLongMessage} />
         </div>
         <div className='mt-auto w-2/3 absolute bottom-0'>
-          <SendMessageContainer username={user.username} chatId={currentChatId} />
+          <SendMessageContainer username={user.username} chatId={currentChatId} showMessageTooLongMessage={showMessageTooLongMessage} toggleSetShowMessageTooLongMessage={toggleSetShowMessageTooLongMessage} />
         </div>
       </div>
     </div>

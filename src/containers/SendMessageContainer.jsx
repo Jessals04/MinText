@@ -5,7 +5,7 @@ import { GraphQLClient, gql } from "graphql-request";
 import { useNavigate } from 'react-router-dom';
 import Encrypt from '../utils/Encrypt';
 
-function SendMessageContainer({ username, chatId }) {
+function SendMessageContainer({ username, chatId, showMessageTooLongMessage, toggleSetShowMessageTooLongMessage }) {
     const [text, setText] = useState('');
     const navigate = useNavigate();
 
@@ -87,6 +87,10 @@ function SendMessageContainer({ username, chatId }) {
             publishMessage(data.createMessage.id);
         })
         .catch((err) => {
+            if (err.message.includes('Expected value to have up to 1000 characters')) {
+              toggleSetShowMessageTooLongMessage();
+              return;
+            }
             console.log(err.message);
             navigate('/login');
         });
@@ -100,7 +104,9 @@ function SendMessageContainer({ username, chatId }) {
             <SendMessage
                 value={text}
                 handleChange={handleChange}
-                handleClick={handleClick} />
+                handleClick={handleClick}
+                showMessageTooLongMessage={showMessageTooLongMessage}
+                toggleShowMessageTooLongMessage={toggleSetShowMessageTooLongMessage} />
         </div>
     );
 }

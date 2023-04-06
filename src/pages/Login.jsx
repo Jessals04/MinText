@@ -109,7 +109,7 @@ function Login({ logIn, user }) {
   // if user is already logged in, navigate back to home
   useEffect(() => {
     if (user.username) navigate('/');
-  }, []);
+  }, [user.username, navigate]);
   
   return (
     <div>

@@ -1,8 +1,12 @@
 import React from "react";
 
 function SendMessage(props) {
-    function handleChange ({ target }) {
+
+    function handleChange({ target }) {
         props.handleChange(target.value);
+        if (props.showMessageTooLongMessage === true) {
+            props.toggleShowMessageTooLongMessage();
+        }
     };
 
     return (
