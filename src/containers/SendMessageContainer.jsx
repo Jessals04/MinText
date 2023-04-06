@@ -100,7 +100,7 @@ function SendMessageContainer({ username, chatId, showMessageTooLongMessage, tog
     };
 
     return (
-        <div>
+        <div className='fixed bottom-0'>
             <SendMessage
                 value={text}
                 handleChange={handleChange}
