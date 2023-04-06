@@ -11,7 +11,7 @@ function CurrentChatInfo({ chatData }) {
                     ?
                     <div className="flex gap-2">
                         <h2 className="text-xs md:text-base">Description:</h2>
-                        <p className="text-xs md:text-base max-h-10 md:max-h-12 overflow-scroll">{chatData.description}</p>
+                        <p className="text-xs md:text-base max-h-10 md:max-h-12 overflow-scroll scrollbar-hide">{chatData.description}</p>
                     </div>
                     :
                     <></>
@@ -22,7 +22,7 @@ function CurrentChatInfo({ chatData }) {
                         ?
                         <div className="flex gap-2">
                             <h2 className="text-xs md:text-base">Members:</h2>
-                            <ul className="flex gap-2 max-h-4 md:max-h-6 overflow-scroll">
+                            <ul className="flex gap-2 max-h-4 md:max-h-6 overflow-scroll scrollbar-hide">
                                 {
                                     chatData.users.map((user) => (
                                         <li className="text-xs md:text-base underline hover:no-underline" key={user.username}>{user.username}</li>
